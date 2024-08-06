@@ -1,6 +1,6 @@
 # CDK Fargate Rails ALB APIGW RDS
 
-This is a demo showing how to deploy a Rails API with CRUD functionality to Fargate, behind an API Gateway (HTTP API), backed by an RDS database instance (accessed with RDS Proxy). DB credentials are managed by Secrets Manager and injected into the container. Database schema migrations are managed via Liquibase in a TriggerFunction construct.
+This is a demo showing how to deploy a Rails API with CRUD functionality to Fargate, behind an API Gateway (HTTP API), backed by an RDS database instance (accessed with RDS Proxy). DB credentials are managed by Secrets Manager and injected into the container. Database schema migrations are managed via Rails migrations on container startup.
 
 ## Prerequisites
 
