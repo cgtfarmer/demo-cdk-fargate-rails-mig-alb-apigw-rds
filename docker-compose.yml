@@ -1,0 +1,63 @@
+version: "3.9"
+
+services:
+  user-service:
+    build:
+      context: src/user-service
+      target: development
+    environment:
+      RAILS_ENV: development
+      PORT: 80
+      BUNDLE_PATH: /usr/local/bundle
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: super
+      DB_DATABASE: postgres
+      # DB_SECRET: '{"username": "postgres", "password": "super"}'
+      # SECRET_KEY_BASE: d9911ce6a8c5cbfe37ed6d0932f2c43825503501109505af91f2373d7d5f1d460b83d47db45ed97a439dffc061861699b114ffe318c15ac1f1d6bbc416c5f709
+    expose:
+      - 80
+    extra_hosts: # For Linux
+      - host.docker.internal:host-gateway
+    tty: true
+    ports:
+      - 80:80
+    volumes:
+      - ./src/user-service:/rails
+      - user-service-bundle:/usr/local/bundle
+
+  db-migration:
+    build:
+      context: src/db-migration-service
+      target: db-migration-service
+    environment:
+      ENV: local
+      MAVEN_CONFIG: /root/.m2
+      DB_JDBC_URL: 'jdbc:postgresql://db:5432/postgres'
+      DB_USERNAME: postgres
+      DB_PASSWORD: super
+      DB_CHANGELOG_FILE: 'db/db.changelog-root.yml'
+    expose:
+      - 80
+    extra_hosts: # For Linux
+      - host.docker.internal:host-gateway
+    tty: true
+    volumes:
+      - ./src/db-migration-service:/usr/src/app
+      - ${HOME}/.m2/repository:/root/.m2/repository
+
+  db:
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: super
+      POSTGRES_DB: postgres
+    image: postgres:13
+    ports:
+      - 5432:5432
+    # volumes:
+    #   - postgres:/var/lib/postgresql/data
+
+volumes:
+  user-service-bundle:
+  # postgres:

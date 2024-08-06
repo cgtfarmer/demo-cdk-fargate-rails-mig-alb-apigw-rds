@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+# If running the rails server then create or migrate existing database
+if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
+  echo "-- DOCKER-ENTRYPOINT: RUNNING rails db:prepare --"
+
+  ./bin/rails db:prepare
+
+  echo "-- DOCKER-ENTRYPOINT: COMPLETED rails db:prepare --"
+else
+  echo "-- DOCKER-ENTRYPOINT: NOT RUNNING rails db:prepare --"
+fi
+
+exec "${@}"
